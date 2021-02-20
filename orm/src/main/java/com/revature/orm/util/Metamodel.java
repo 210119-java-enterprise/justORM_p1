@@ -1,9 +1,9 @@
 package com.revature.orm.util;
 
 import com.revature.orm.annotations.Column;
-import com.revature.orm.annotations.Entity;
-import com.revature.orm.annotations.Id;
-import com.revature.orm.annotations.JoinColumn;
+import com.revature.orm.annotations.Table;
+import com.revature.orm.annotations.PK;
+import com.revature.orm.annotations.FK;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -13,12 +13,12 @@ import java.util.List;
 public class Metamodel<T> {
 
     private Class<T> clazz;
-    private IdField primaryKeyField;
+    private PrimaryKey primaryKeyField;
     private List<ColumnField> columnFields;
     private List<ForeignKeyField> foreignKeyFields;
 
     public static <T> Metamodel<T> of(Class<T> clazz) {
-        if (clazz.getAnnotation(Entity.class) == null) {
+        if (clazz.getAnnotation(Table.class) == null) {
             throw new IllegalStateException("Cannot create Metamodel object! Provided class, " + clazz.getName() + "is not annotated with @Entity");
         }
         return new Metamodel<>(clazz);
@@ -34,17 +34,19 @@ public class Metamodel<T> {
         return clazz.getName();
     }
 
+    public Class<T> getModel() { return clazz; }
+
     public String getSimpleClassName() {
         return clazz.getSimpleName();
     }
 
-    public IdField getPrimaryKey() {
+    public PrimaryKey getPrimaryKey() {
 
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            Id primaryKey = field.getAnnotation(Id.class);
+            PK primaryKey = field.getAnnotation(PK.class);
             if (primaryKey != null) {
-                return new IdField(field);
+                return new PrimaryKey(field);
             }
         }
         throw new RuntimeException("Did not find a field annotated with @Id in: " + clazz.getName());
@@ -72,7 +74,7 @@ public class Metamodel<T> {
         List<ForeignKeyField> foreignKeyFields = new ArrayList<>();
         Field[] fields = clazz.getDeclaredFields();
         for (Field field : fields) {
-            JoinColumn column = field.getAnnotation(JoinColumn.class);
+            FK column = field.getAnnotation(FK.class);
             if (column != null) {
                 foreignKeyFields.add(new ForeignKeyField(field));
             }

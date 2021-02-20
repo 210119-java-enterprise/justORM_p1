@@ -1,6 +1,5 @@
 package com.revature.orm;
 
-import com.revature.orm.models.Test;
 import com.revature.orm.models.User;
 import com.revature.orm.util.*;
 
@@ -11,13 +10,12 @@ public class OrmDriver {
     public static void main(String[] args) {
 
         Configuration cfg = new Configuration();
-        cfg.addAnnotatedClass(User.class)
-           .addAnnotatedClass(Test.class);
+        cfg.addAnnotatedClass(User.class);
 
         for (Metamodel<?> metamodel : cfg.getMetamodels()) {
 
             System.out.printf("Printing metamodel for class: %s\n", metamodel.getClassName());
-            IdField idField = metamodel.getPrimaryKey();
+            PrimaryKey idField = metamodel.getPrimaryKey();
             List<ColumnField> columnFields = metamodel.getColumns();
             List<ForeignKeyField> foreignKeyFields = metamodel.getForeignKeys();
 

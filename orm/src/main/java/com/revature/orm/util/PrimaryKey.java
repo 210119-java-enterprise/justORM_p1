@@ -1,16 +1,16 @@
 package com.revature.orm.util;
 
 import com.revature.orm.annotations.Column;
-import com.revature.orm.annotations.Id;
+import com.revature.orm.annotations.PK;
 
 import java.lang.reflect.Field;
 
-public class IdField {
+public class PrimaryKey {
 
     private Field field;
 
-    public IdField(Field field) {
-        if (field.getAnnotation(Id.class) == null) {
+    public PrimaryKey(Field field) {
+        if (field.getAnnotation(PK.class) == null) {
             throw new IllegalStateException("Cannot create IdField object! Provided field, " + getName() + "is not annotated with @Id");
         }
         this.field = field;
@@ -25,7 +25,7 @@ public class IdField {
     }
 
     public String getColumnName() {
-        return field.getAnnotation(Id.class).columnName();
+        return field.getAnnotation(PK.class).columnName();
     }
 
 }

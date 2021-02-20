@@ -1,14 +1,14 @@
 package com.revature.orm.models;
 
 import com.revature.orm.annotations.Column;
-import com.revature.orm.annotations.Entity;
-import com.revature.orm.annotations.Id;
-import com.revature.orm.annotations.JoinColumn;
+import com.revature.orm.annotations.Table;
+import com.revature.orm.annotations.PK;
+import com.revature.orm.annotations.FK;
 
-@Entity(tableName = "users")
+@Table(tableName = "users")
 public class User {
 
-    @Id(columnName = "id")
+    @PK(columnName = "id")
     private int id;
 
     @Column(columnName = "first_name")
@@ -20,8 +20,6 @@ public class User {
     @Column(columnName = "email_address")
     private String emailAddress;
 
-    @JoinColumn(columnName = "test_relation")
-    private Test testRelation;
 
     public User() {
         super();
