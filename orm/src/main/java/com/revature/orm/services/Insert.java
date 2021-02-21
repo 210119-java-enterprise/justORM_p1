@@ -46,12 +46,18 @@ public class Insert {
 
         int numberOfColumns = columns.size();
 
-        StringBuilder tableInsert = new StringBuilder("INSERT INTO " + table + " ");
-        StringBuilder values = new StringBuilder("VALUES ");
+        StringBuilder tableInsert = new StringBuilder("INSERT INTO " + table + " (");
+        StringBuilder values = new StringBuilder("VALUES (");
 
         for (int i = 0; i < numberOfColumns; i++) {
-            tableInsert.append(columns.get(i)).append(", ");
-            values.append(" ? ").append(", ");
+            if(i == (numberOfColumns -1))
+            {
+                tableInsert.append(columns.get(i)).append(") ");
+                values.append(" ? ").append(") ");
+            }else {
+                tableInsert.append(columns.get(i)).append(", ");
+                values.append(" ? ").append(", ");
+            }
         }
 
         insert = tableInsert.toString() + values.toString();
