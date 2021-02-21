@@ -10,8 +10,9 @@ import java.util.Properties;
 public class ConnectionFactory {
 
     private static Properties props = new Properties();
+    private static ConnectionFactory conn = new ConnectionFactory();
 
-    /*
+    /**
      * Tries to connect to the postgresql class driver to open a connection
      * to the database
      */
@@ -25,21 +26,22 @@ public class ConnectionFactory {
 
     /**
      * New connection factory from the path to your properties file
-     * @param pathName the string representation of the path to your properties file
      */
-    public ConnectionFactory(String pathName){
+    public ConnectionFactory(){
         try{
-            props.load(new FileReader(pathName));
+            props.load(new FileReader("src/main/resources/application.properties"));
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
+    public static ConnectionFactory getInstance() {return conn;}
+
     /**
      * Gets the connection to the database
      * @return the connection to the database
      */
-    public static Connection getConnection(){
+    public Connection getConnection(){
         Connection conn = null;
 
         try{

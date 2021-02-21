@@ -11,11 +11,10 @@ import java.util.ArrayList;
 
 public class Update {
 
-    private String update;
+    private String update="";
 
     public Update(Metamodel<?> model, Object o)
     {
-        update = "";
         parseModel(model, o);
     }
 
@@ -60,5 +59,9 @@ public class Update {
         }
 
         update = "UPDATE " + table + " " + condition1.toString() + condition2.toString();
+    }
+
+    public String getUpdate() {
+        return update;
     }
 }

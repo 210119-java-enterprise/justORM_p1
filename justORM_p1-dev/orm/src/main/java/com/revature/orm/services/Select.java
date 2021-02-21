@@ -4,10 +4,9 @@ import com.revature.orm.annotations.Table;
 import com.revature.orm.util.Metamodel;
 
 public class Select {
-    private String select;
+    private String select="";
 
     public Select(Metamodel<?> model) {
-        select = "";
         selectAll(model);
     }
 

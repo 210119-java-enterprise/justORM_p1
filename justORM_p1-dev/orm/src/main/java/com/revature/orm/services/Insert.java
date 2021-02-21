@@ -13,11 +13,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class Insert {
-    private String insert;
+    private String insert="";
 
     public Insert(Metamodel<?> model, Object o)
     {
-        insert = "";
         parseModel(model, o);
     }
 

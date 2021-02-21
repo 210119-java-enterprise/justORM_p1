@@ -11,11 +11,10 @@ import java.util.ArrayList;
 
 public class Delete {
 
-    private String delete;
+    private String delete="";
 
     public Delete(Metamodel<?> model, Object o)
     {
-        delete = "";
         parseModel(model, o);
     }
 
