@@ -108,12 +108,13 @@ public class DaoModel {
 
     }
 
-    public int update(Metamodel<?> model, Object object){
+    public int update(Metamodel<?> model, Object newObject, Object updatingObject){
 
         int result = 0;
 
-        Update updateString = new Update(model ,object);
-        ArrayList<String> objectValues = getValues(object);
+        Update updateString = new Update(model ,updatingObject);
+        ArrayList<String> updatingObjectValues = getValues(updatingObject);
+        ArrayList<String> newObjectValues = getValues(newObject);
 
         try {
 
@@ -124,13 +125,15 @@ public class DaoModel {
             PreparedStatement pstmt = con.prepareStatement(updateString.getUpdate());
 
             int j = 1;
+            int numberColumn = updatingObjectValues.size();
 
             // setting the ? in prep statement
-            for (int i = 0; i < objectValues.size(); i++) {
-                pstmt.setObject(j, objectValues.get(i));
+            for (int i = 0; i < updatingObjectValues.size(); i++) {
+                pstmt.setObject(j, newObjectValues.get(i));
+                pstmt.setObject(j+numberColumn, updatingObjectValues.get(i));
                 j++;
             }
-            pstmt.executeUpdate();
+            result = pstmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
