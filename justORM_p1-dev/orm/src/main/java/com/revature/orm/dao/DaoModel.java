@@ -14,11 +14,33 @@ import java.util.ArrayList;
 
 public class DaoModel {
 
-    public int insert(Metamodel<?> model, Object object){
+    public void insert(Metamodel<?> model, Object object){
         int result = 0;
         Insert insertStatement = new Insert(model ,object);
         ArrayList<String> objectValues = getValues(object);
 
+        try {
+
+//            insertStatement = "INSERT INTO user_accounts (user_id, acc_id) "+
+//                              "VALUES (?, ?) ";
+
+            Connection con = ConnectionFactory.getInstance.getConnection(); //need to work on connection pooling
+            PreparedStatement pstmt = con.prepareStatement(insertStatement.getInsert());
+
+            int j = 1;
+
+            // setting the ? in prep statement
+            for (int i = 0; i < objectValues.size(); i++) {
+                pstmt.setObject(j, objectValues.get(i));
+                j++;
+            }
+            pstmt.executeUpdate();
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }finally {
+            con.close();
+        }
 
         return result;
     }

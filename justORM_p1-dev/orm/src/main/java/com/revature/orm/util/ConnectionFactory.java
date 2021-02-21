@@ -9,7 +9,7 @@ import java.util.Properties;
 
 public class ConnectionFactory {
 
-    private Properties props = new Properties();
+    private static Properties props = new Properties();
 
     /*
      * Tries to connect to the postgresql class driver to open a connection
@@ -39,7 +39,7 @@ public class ConnectionFactory {
      * Gets the connection to the database
      * @return the connection to the database
      */
-    public Connection getConnection(){
+    public static Connection getConnection(){
         Connection conn = null;
 
         try{
