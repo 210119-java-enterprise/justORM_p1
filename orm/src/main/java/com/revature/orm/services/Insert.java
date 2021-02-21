@@ -17,6 +17,7 @@ public class Insert {
 
     public Insert(Metamodel<?> model, Object o)
     {
+        insert = "";
         parseModel(model, o);
     }
 
