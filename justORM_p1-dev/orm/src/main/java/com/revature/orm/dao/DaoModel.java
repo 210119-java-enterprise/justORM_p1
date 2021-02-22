@@ -3,23 +3,29 @@ package com.revature.orm.dao;
 import com.revature.orm.annotations.*;
 import com.revature.orm.services.Delete;
 import com.revature.orm.services.Insert;
+import com.revature.orm.services.Select;
 import com.revature.orm.services.Update;
+import com.revature.orm.util.ColumnField;
 import com.revature.orm.util.ConnectionFactory;
 import com.revature.orm.util.Metamodel;
 import com.revature.orm.util.PrimaryKey;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 public class DaoModel {
 
     public int insert(Metamodel<?> model, Object object){
 
         int result = 0;
-        Insert insertString = new Insert(model ,object);
+        Insert insertString = new Insert(model,object);
         ArrayList<String> objectValues = getValues(object);
 
         try {
@@ -53,7 +59,7 @@ public class DaoModel {
 
         int result = 0;
 
-        Delete deleteString = new Delete(model ,object);
+        Delete deleteString = new Delete(model,object);
         ArrayList<String> objectValues = getValues(object);
 
         try {
@@ -79,40 +85,35 @@ public class DaoModel {
         return result;
     }
 
-    public void selectAll(Metamodel<?> model, Object object){
+    public List<?> selectAll(Metamodel<?> model){
 
-        Insert insertStatement = new Insert(model ,object);
-        ArrayList<String> objectValues = getValues(object);
+        List<Object> objects = new ArrayList<>();
+        Select selectString = new Select(model);
 
         try {
-
-//            insertStatement = "INSERT INTO user_accounts (user_id, acc_id) "+
-//                              "VALUES (?, ?) ";
+//            syntax: SELECT * FROM tablename
 
             Connection con = ConnectionFactory.getInstance().getConnection();
-            PreparedStatement pstmt = con.prepareStatement(insertStatement.getInsert());
+            PreparedStatement pstmt = con.prepareStatement(selectString.getSelect());
 
-            int j = 1;
+            ResultSet rs = pstmt.executeQuery();
+            ResultSetMetaData rsData = rs.getMetaData();
+            objects = mapping(model, rs, rsData);
 
-            // setting the ? in prep statement
-            for (int i = 0; i < objectValues.size(); i++) {
-                pstmt.setObject(j, objectValues.get(i));
-                j++;
-            }
-            pstmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
 
+        return objects;
     }
 
     public int update(Metamodel<?> model, Object newObject, Object updatingObject){
 
         int result = 0;
 
-        Update updateString = new Update(model ,updatingObject);
+        Update updateString = new Update(model,updatingObject);
         ArrayList<String> updatingObjectValues = getValues(updatingObject);
         ArrayList<String> newObjectValues = getValues(newObject);
 
@@ -167,4 +168,62 @@ public class DaoModel {
 
         return objectValues;
     }
+
+    private List<Object> mapping(Metamodel<?> model, ResultSet rs, ResultSetMetaData rsData)
+    {
+        List<Object> objects = new ArrayList<>();
+
+        Constructor<?> hasNoArgConstructor = null;
+        Constructor<?>[] constructors = model.getModel().getConstructors();
+
+        hasNoArgConstructor = Arrays.stream(constructors).
+                             filter(constructor -> constructor.getParameterCount() == 0).
+                             findFirst().
+                             get();
+
+        try {
+            List<String> columns = new ArrayList<>();
+            List<ColumnField> columnFields = model.getColumns();
+
+            for (int i = 0; i < rsData.getColumnCount(); i++) {
+                columns.add(rsData.getColumnName(i + 1)); //column – the first column is 1, the second is 2...
+            }
+
+            while (rs.next()) {
+
+                Object object = hasNoArgConstructor.newInstance();
+
+                for (String c : columns) {
+                    for (ColumnField cs : columnFields) {
+
+                        Object objectValue = rs.getObject(c);
+                        String colName = cs.getName();
+
+                        String methodName = colName.substring(0,1).toUpperCase() + colName.substring(1);
+
+                        Method method = model.getModel().getMethod("set" + methodName, cs.getType());
+                        method.invoke(object, objectValue);
+                    }
+                }
+            }
+        }catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        }
+
+        return objects;
+    }
+
+
 }
+
+
+
+
