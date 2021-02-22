@@ -1,5 +1,7 @@
 package com.revature.orm.util;
 
+import com.revature.orm.util.session.SessionFactory;
+
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
@@ -55,6 +57,5 @@ public class ConnectionFactory {
 
         return conn;
     }
-
 
 }

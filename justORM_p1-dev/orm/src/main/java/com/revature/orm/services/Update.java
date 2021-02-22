@@ -34,10 +34,10 @@ public class Update {
                 columns.add(column.columnName());
             }else if(pk != null)
             {
-                columns.add(column.columnName());
+                columns.add(pk.columnName());
             }else if(fk != null)
             {
-                columns.add(column.columnName());
+                columns.add(fk.columnName());
             }
 
         }

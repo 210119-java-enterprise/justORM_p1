@@ -43,8 +43,10 @@ public class DaoModel {
                 pstmt.setObject(j, objectValues.get(i));
                 j++;
             }
-            result = pstmt.executeUpdate(); //1 if successful insert | 0 if not inserted
+            System.out.println(pstmt);
 
+            result = pstmt.executeUpdate(); //1 if successful insert | 0 if not inserted
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -77,7 +79,7 @@ public class DaoModel {
                 j++;
             }
             result = pstmt.executeUpdate();//1 if successful  | 0 if not
-
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -100,7 +102,7 @@ public class DaoModel {
             ResultSetMetaData rsData = rs.getMetaData();
             objects = mapping(model, rs, rsData);
 
-
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -135,7 +137,7 @@ public class DaoModel {
                 j++;
             }
             result = pstmt.executeUpdate();
-
+            con.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -26,6 +26,10 @@ public class Session {
     {
         Metamodel<?> model = isModel(object);
 
+        if(model == null)
+        {
+            throw new WrongModelException("model is null error.");
+        }
         return daoService.insert(model, object);
     }
 
@@ -69,20 +73,14 @@ public class Session {
 
     private Metamodel<?> isModel(Object object)
     {
-        Metamodel<?> theModel = null;
 
         for(Metamodel<?> model : metamodelList)
         {
             if(object.getClass().getName().equals(model.getClassName()))
             {
-                theModel = model;
+                return model;
             }
         }
-        if(theModel == null)
-        {
-            throw new WrongModelException("model is null error.");
-        }
-
-        return theModel;
+        return null;
     }
 }

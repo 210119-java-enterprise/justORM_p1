@@ -25,21 +25,23 @@ public class Insert {
 
         ArrayList<String> columns = new ArrayList<>();
 
-        for(Field f: o.getClass().getDeclaredFields()){
+        for(Field f: o.getClass().getDeclaredFields()) {
             Column column = f.getAnnotation(Column.class);
             PK pk = f.getAnnotation(PK.class);
             FK fk = f.getAnnotation(FK.class);
 
+            System.out.println(f.getAnnotation(Column.class));
+            System.out.println(f.getAnnotation(PK.class));
 
             if(column != null)
             {
                 columns.add(column.columnName());
             }else if(pk != null)
             {
-                columns.add(column.columnName());
+                columns.add(pk.columnName());
             }else if(fk != null)
             {
-                columns.add(column.columnName());
+                columns.add(fk.columnName());
             }
 
         }

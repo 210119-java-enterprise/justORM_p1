@@ -5,7 +5,7 @@ import com.revature.orm.annotations.Table;
 import com.revature.orm.annotations.PK;
 import com.revature.orm.annotations.FK;
 
-@Table(tableName = "users")
+@Table(tableName = "app_user")
 public class User {
 
     @PK(columnName = "id")
@@ -17,7 +17,7 @@ public class User {
     @Column(columnName = "last_name")
     private String lastName;
 
-    @Column(columnName = "email_address")
+    @Column(columnName = "email")
     private String emailAddress;
 
 
