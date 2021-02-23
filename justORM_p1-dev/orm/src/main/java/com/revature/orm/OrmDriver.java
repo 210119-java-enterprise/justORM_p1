@@ -35,19 +35,34 @@ public class OrmDriver {
 //        }
 
 
-        User user = new User("tuan", "mai", "email");
+//        User user = new User("id1", "tuan", "mai", "email");
+//        User user1 = new User("id2", "mike", "loop", "kiching");
+//        User user2 = new User("id3", "mike", "loofe", "noo");
+//        User updatedUser = new User("id1","updated", "updated", "updated");
+//
+//        SessionFactory sessionFactory = new Configuration().addAnnotatedClass(User.class).buildSessionFactory();
+//
+//        Session session = sessionFactory.openSession();
 
 
-        SessionFactory sessionFactory = new Configuration().addAnnotatedClass(User.class).buildSessionFactory();
+//        int added = session.save(user);
+//        System.out.println(added);
+        //int added = session.save(user1);
+//        int added = session.save(user2);
+//
+//        System.out.println(added);
 
-        Session session = sessionFactory.openSession();
+//        int updated = session.update(updatedUser, user);
+//
+//        System.out.println(updated);
 
-        int added = session.save(user);
 
-        System.out.println(added);
+//s
 
-        //List<User> users = (List<User>) session.selectAll(User.class);
 
+//        int deleted = session.delete(user1);
+//
+//        System.out.println(deleted);
 
     }
 

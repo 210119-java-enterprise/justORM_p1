@@ -9,15 +9,31 @@ import com.revature.orm.util.Metamodel;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+/**
+ * This class builds the delete query string for the postgres delete statement
+ */
 public class Delete {
 
     private String delete="";
 
+    /**
+     * Constructor for deleting an inserted object into SQL that takes in an object and a metamodel
+     * that is related to that object
+     * @param model metamodel of the related object being deleted
+     * @param o object that has the values to be deleted
+     */
     public Delete(Metamodel<?> model, Object o)
     {
         parseModel(model, o);
     }
 
+
+    /**
+     * Parses the model and object for the table name and columns that is used to build the deleted
+     * statement. Also builds the syntax for the deletion using stringbuilder with the data from the table and columns.
+     * @param model the metamodel that relates to the object
+     * @param o object that has the values to be inserted
+     */
     private void parseModel(Metamodel<?> model, Object o) {
         String table = model.getModel().getAnnotation(Table.class).tableName();
 

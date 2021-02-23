@@ -1,27 +1,31 @@
-package com.revature.orm.dao;
+package com.revature.orm.repos;
 
 import com.revature.orm.annotations.*;
 import com.revature.orm.services.Delete;
 import com.revature.orm.services.Insert;
 import com.revature.orm.services.Select;
 import com.revature.orm.services.Update;
-import com.revature.orm.util.ColumnField;
 import com.revature.orm.util.ConnectionFactory;
 import com.revature.orm.util.Metamodel;
-import com.revature.orm.util.PrimaryKey;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
-public class DaoModel {
+/**
+ * This class is used to interact with the database with a DML/DQL statement
+ * and will return an a result stating that the statement was successful or not
+ */
+public class CRUDRepo {
 
+    /**
+     * Insert a user specified object into a already existing database
+     * @param model the model of the class inserted
+     * @param object the object of with values inserted
+     * @return returns a result of 0 if not inserted correctly, or 1 if insert worked
+     */
     public int insert(Metamodel<?> model, Object object){
 
         int result = 0;
@@ -43,9 +47,11 @@ public class DaoModel {
                 pstmt.setObject(j, objectValues.get(i));
                 j++;
             }
+
             System.out.println(pstmt);
 
             result = pstmt.executeUpdate(); //1 if successful insert | 0 if not inserted
+
             con.close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,6 +63,13 @@ public class DaoModel {
         return result;
     }
 
+    /**
+     * delete a user specified object from a already existing database where the conditions
+     * is equals to the value from the object in the database
+     * @param model the model of the class deleted
+     * @param object the object of with values deleted
+     * @return returns a result of 0 if not deleted correctly, or 1 if deleted worked
+     */
     public int delete(Metamodel<?> model, Object object){
 
         int result = 0;
@@ -78,6 +91,8 @@ public class DaoModel {
                 pstmt.setObject(j, objectValues.get(i));
                 j++;
             }
+
+            System.out.println(pstmt);
             result = pstmt.executeUpdate();//1 if successful  | 0 if not
             con.close();
         } catch (SQLException e) {
@@ -87,7 +102,13 @@ public class DaoModel {
         return result;
     }
 
-    public List<?> selectAll(Metamodel<?> model){
+    /**
+     * selects all the objects within a table given the table name from an object
+     * @param model the model of the class deleted
+     * @param obj the object of with values deleted
+     * @return returns a list of records inside a database
+     */
+    public List<?> selectAll(Metamodel<?> model, Object obj){
 
         List<Object> objects = new ArrayList<>();
         Select selectString = new Select(model);
@@ -99,8 +120,11 @@ public class DaoModel {
             PreparedStatement pstmt = con.prepareStatement(selectString.getSelect());
 
             ResultSet rs = pstmt.executeQuery();
+
+            System.out.println(pstmt);
+
             ResultSetMetaData rsData = rs.getMetaData();
-            objects = mapping(model, rs, rsData);
+            objects = mapping(model, rs, obj, rsData);
 
             con.close();
         } catch (SQLException e) {
@@ -111,6 +135,13 @@ public class DaoModel {
         return objects;
     }
 
+    /**
+     * selects all the objects within a table given the table name from an object
+     * @param model the model of the class updated
+     * @param newObject the object of which values is to be inserted into the old object
+     * @param updatingObject the object that we want to update
+     * @return returns a 1 if successfully updated else returns a 0 if update failed
+     */
     public int update(Metamodel<?> model, Object newObject, Object updatingObject){
 
         int result = 0;
@@ -136,6 +167,9 @@ public class DaoModel {
                 pstmt.setObject(j+numberColumn, updatingObjectValues.get(i));
                 j++;
             }
+
+            System.out.println(pstmt);
+
             result = pstmt.executeUpdate();
             con.close();
         } catch (SQLException e) {
@@ -146,7 +180,11 @@ public class DaoModel {
     }
 
 
-
+    /**
+     * parse through the object passed by the user and get the values within the object
+     * @param o object being parse to get the values
+     * @return returns a array list of values contained in the object
+     */
     private ArrayList<String> getValues(Object o)
     {
         ArrayList<String> objectValues = new ArrayList<>();
@@ -171,42 +209,44 @@ public class DaoModel {
         return objectValues;
     }
 
-    private List<Object> mapping(Metamodel<?> model, ResultSet rs, ResultSetMetaData rsData)
+    /**
+     * maps the data from a database to a list of objects
+     * @param model the model of the object
+     * @param rs the result set returned from the database
+     * @param obj the object of the list
+     * @param rsData the meta data from the result set
+     * @return returns a list of objects acquired from the database
+     */
+    private List<Object> mapping(Metamodel<?> model, ResultSet rs, Object obj, ResultSetMetaData rsData)
     {
-        List<Object> objects = new ArrayList<>();
-
-        Constructor<?> hasNoArgConstructor = null;
-        Constructor<?>[] constructors = model.getModel().getConstructors();
-
-        hasNoArgConstructor = Arrays.stream(constructors).
-                             filter(constructor -> constructor.getParameterCount() == 0).
-                             findFirst().
-                             get();
+        List<Object> objects= new LinkedList<>();
 
         try {
-            List<String> columns = new ArrayList<>();
-            List<ColumnField> columnFields = model.getColumns();
+            List<String> rsColumns = new LinkedList<>();
 
             for (int i = 0; i < rsData.getColumnCount(); i++) {
-                columns.add(rsData.getColumnName(i + 1)); //column – the first column is 1, the second is 2...
+                rsColumns.add(rsData.getColumnName(i + 1)); //column – the first column is 1, the second is 2...
             }
+
+            System.out.println(rsColumns);
 
             while (rs.next()) {
 
-                Object object = hasNoArgConstructor.newInstance();
+                Object newObject = obj.getClass().getConstructor().newInstance();
 
-                for (String c : columns) {
-                    for (ColumnField cs : columnFields) {
+                for (String c : rsColumns) {
 
-                        Object objectValue = rs.getObject(c);
-                        String colName = cs.getName();
+                    Class<?> classType = model.findClassOfColumn(c);
+                    Object objectValue = rs.getObject(c);
 
-                        String methodName = colName.substring(0,1).toUpperCase() + colName.substring(1);
+                    String colName = model.findFieldNameOfColumn(c);
+                    String methodName = colName.substring(0,1).toUpperCase() + colName.substring(1);
 
-                        Method method = model.getModel().getMethod("set" + methodName, cs.getType());
-                        method.invoke(object, objectValue);
-                    }
+                    Method method = obj.getClass().getMethod("set" + methodName, classType);
+                    method.invoke(newObject, objectValue);
+
                 }
+                objects.add(newObject);
             }
         }catch (InstantiationException e) {
             e.printStackTrace();
@@ -219,6 +259,8 @@ public class DaoModel {
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
         }
+
+        System.out.println(objects);
 
         return objects;
     }

@@ -9,7 +9,7 @@ import com.revature.orm.annotations.FK;
 public class User {
 
     @PK(columnName = "id")
-    private int id;
+    private String id;
 
     @Column(columnName = "first_name")
     private String firstName;
@@ -31,11 +31,18 @@ public class User {
         this.emailAddress = emailAddress;
     }
 
-    public int getId() {
+    public User(String id, String firstName, String lastName, String emailAddress) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.emailAddress = emailAddress;
+    }
+
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
