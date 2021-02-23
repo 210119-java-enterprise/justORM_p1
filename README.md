@@ -36,9 +36,18 @@ Must include insde application.properties:
 ## Configuration (Annotations)
   
   1. @Column - fields that represent a column inside a table. @Column element 
-     must have "columnName" the same as inside the table
-  2. @PK - fields that represent the primary key inside a table. @Column element 
-     must have "columnName" the same as inside the table
-  3. @FK - fields that represent the foreign key inside a table. @Column element 
-     must have "columnName" the same as inside the table
-  4. @Table
+     must have "columnName" the same as inside the table.
+  2. @PK - fields that represent the primary key inside a table. @PK element 
+     must have "columnName" the same as inside the table.
+  3. @FK - fields that represent the foreign key inside a table. @FK element 
+     must have "columnName" the same as inside the table.
+  4. @Table - class that represents the table name. @Table element "tableName" 
+     must be the same as talbe name in database.
+     
+## Configuration (Session)
+
+        SessionFactory sessionFactory = new Configuration()
+                                            .addAnnotatedClass(User.class)
+                                            .buildSessionFactory();
+
+        Session session = sessionFactory.openSession();
