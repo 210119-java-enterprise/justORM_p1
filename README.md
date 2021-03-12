@@ -44,9 +44,9 @@ Include this dependency in your pom.xml file:
 ### Configuration (application.properties)
 
 Must include insde application.properties:
-  url= jdbc:postgresql://host:port/database
-  username = username 
-  password = password 
+  * url= jdbc:postgresql://host:port/database
+  * username = username 
+  * password = password 
   
 ### Configuration (Annotations)
   
