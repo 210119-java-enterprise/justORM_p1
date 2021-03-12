@@ -1,6 +1,6 @@
 # justORM_p1
 
-## Proejct Description
+## Project Description
 justORM is a simple ORM created by Tuan Mai. This ORM is able to implement simple CRUD methods such as:
 Inserting, Select All, Updating, and Deleting. This ORM is used with PostgreSQL databases.
 
