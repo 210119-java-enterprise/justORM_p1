@@ -10,8 +10,8 @@ Inserting, Select All, Updating, and Deleting. This ORM is used with PostgreSQL 
 * PostGreSQL - version 12.4
 * Git SCM (on GitHub) - version 2.30.1
 
-##Features
 
+## Features
 List of features ready and TODOs for future development
 * A public API that can be added as a dependency in other projects
 * Programmatic configuration of entities
