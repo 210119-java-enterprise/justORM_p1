@@ -3,6 +3,12 @@
 justORM is a simple ORM created by Tuan Mai. This ORM is able to implement simple CRUD methods such as:
 Inserting, Select All, Updating, and Deleting. This ORM is used with PostgreSQL databases.
 
+## Technologies Used
+Java - version 8.0
+Apache Maven - version 3.6.3
+PostGreSQL - version 12.4
+Git SCM (on GitHub) - version 2.30.1
+
 ## Rundown
 
 The justORM framework relies on intergrating annotations into your project. The POJOs must be annotated with correct
