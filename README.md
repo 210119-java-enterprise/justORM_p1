@@ -22,7 +22,8 @@ to-do list:
 * Connection Pooling
 * Implemented Foregin Key references
 
-##Getting Started
+
+## Getting Started
 
 ### Configuration (Maven Dependency)
 
